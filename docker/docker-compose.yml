@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password  # Set your MySQL root password here
+      MYSQL_DATABASE: my_database  # You can specify a default database if you want
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql  # Persist MySQL data across container restarts
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db  # Hostname of the MySQL container
+      MYSQL_ROOT_PASSWORD: root_password  # Same root password as MySQL
+    ports:
+      - "8081:80"  # Expose phpMyAdmin on port 8080
+
+volumes:
+  mysql-data:
+    driver: local

@@ -1,0 +1,24 @@
+# Use an official OpenJDK image as the base
+FROM openjdk:17-jdk-slim
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy Maven wrapper files and pom.xml
+COPY pom.xml ./
+
+# Pre-fetch dependencies to optimize builds
+# RUN mvn dependency:go-offline
+
+# Copy the rest of the application code
+COPY . .
+
+# Build the application, skipping tests
+#RUN mvn package -DskipTests
+
+# Expose the port your Spring Boot app runs on
+EXPOSE 8080
+
+# Start the application
+CMD ["java", "-jar", "target/chatop-backend-0.0.1.jar"]
+
