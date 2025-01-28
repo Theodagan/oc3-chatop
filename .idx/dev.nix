@@ -31,11 +31,11 @@
           (
             cd docker && docker-compose up -d 
             cd ../backend && mvn spring-boot:run 
-            cd ../frontend && ng serve --host 0.0.0.0 --disable-host-check &
+            cd ../frontend && ng serve 
           ) &
             # Wait for backend and frontend to be ready 
-            wait-for -q localhost:8080 # Backend port
-            wait-for -q localhost:4200 # Frontend port
+            #wait-for -q localhost:8080 # Backend port
+            #wait-for -q localhost:4200 # Frontend port
         '';
       };
       
