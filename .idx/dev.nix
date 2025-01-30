@@ -28,11 +28,10 @@
       };
       onStart = {
       runServer = ''
-          (
             cd docker && docker-compose up -d 
-            cd ../backend && mvn spring-boot:run 
+            cd ../backend && mvn spring-boot:run &> /dev/null &
             cd ../frontend && ng serve 
-          ) &
+
             # Wait for backend and frontend to be ready 
             #wait-for -q localhost:8080 # Backend port
             #wait-for -q localhost:4200 # Frontend port
