@@ -1,10 +1,12 @@
 package com.chatop.api.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.chatop.api.model.User;
 import com.chatop.api.repository.UserRepository;
 
+@Service
 public class UserService {
 
     @Autowired

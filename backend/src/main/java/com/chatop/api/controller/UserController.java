@@ -20,6 +20,11 @@ public class UserController {
         return userService.getConnectedUser();
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "coucou les patissiers";
+    }
+
 
     @PostMapping("/auth/register")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
