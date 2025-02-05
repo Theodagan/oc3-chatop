@@ -7,7 +7,7 @@ services:
       MYSQL_ROOT_PASSWORD: root_password  # Set your MySQL root password here
       MYSQL_DATABASE: my_database  # You can specify a default database if you want
     ports:
-      - "3306:3306"
+      - "3307:3307"
     volumes:
       - mysql-data:/var/lib/mysql  # Persist MySQL data across container restarts
 

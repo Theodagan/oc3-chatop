@@ -3,11 +3,11 @@
 { pkgs, ... }: {
   # Which nixpkgs channel to use.
   channel = "stable-23.11"; # or "unstable"
-  # services = {
-  #   mysql = {
-  #     enable = true;
-  #   };
-  # };
+  services = {
+    mysql = {
+      enable = true;
+    };
+  };
   # Use https://search.nixos.org/packages to find packages
   packages = [
     pkgs.zulu17
@@ -16,11 +16,13 @@
     pkgs.nettools 
     # pkgs.nodejs_18
     # pkgs.socat
-    pkgs.mysql
+    pkgs.mysql80
   ];
   # Sets environment variables in the workspace
   env = {
-    SOME_ENV_VAR = "hello";
+    DATABASE_URL = "jdbc:mysql://localhost:3306/my_database?connectTimeout=5000&socketTimeout=5000"; # Modify this if needed
+    DATABASE_USER = "root";
+    DATABASE_PASSWORD = "root_password";
   };
   services.docker.enable = true;
   idx = {
@@ -57,11 +59,10 @@
       };
       onStart = {
       runServer = ''
-            cd docker && docker-compose up -d 
-
-            # socat TCP-LISTEN:3306,reuseaddr,fork TCP:db:3306 & # Start the proxy
-            
-            cd ../backend && mvn spring-boot:run &> /dev/null &
+            # cd docker && docker-compose up -d             
+            # cd ../backend && mvn spring-boot:run &> /dev/null &
+            # cd ../frontend && ng serve 
+            cd backend && mvn spring-boot:run &> /dev/null &
             cd ../frontend && ng serve 
         '';
       };

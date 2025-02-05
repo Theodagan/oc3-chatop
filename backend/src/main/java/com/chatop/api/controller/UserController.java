@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 //import java.util.Optional;
 
 @RestController
@@ -21,8 +22,17 @@ public class UserController {
     }
 
     @GetMapping("/test")
-    public String test() {
-        return "coucou les patissiers";
+    public String test() { 
+        //return "coucou les patissiers";
+        Iterable<User> allUsers = userService.getAllUsers();
+        if(!allUsers.iterator().hasNext()){
+            System.out.println("No users found in the database.");
+            return "No users found in the database.";
+        }
+        for(User user : allUsers){
+            System.out.println("coucou");
+            System.out.println(user.toString());
+        } return "testtttt";
     }
 
 
@@ -43,9 +53,6 @@ public class UserController {
     }
 
 
-
-
-    // Add other endpoints (PUT, DELETE) as needed...
     //GET /user: Get the connected user's information.
     //POST /auth/register: Register a new user.
     //POST /auth/login: Authenticate a user (login).

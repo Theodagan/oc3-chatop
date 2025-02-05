@@ -17,7 +17,10 @@ public class UserService {
         throw new UnsupportedOperationException("Unimplemented method 'getConnectedUser'");
     }
 
-
+    public Iterable<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+    
     public void saveUser(User user) {
         if(user != null){
             userRepository.save(user);
