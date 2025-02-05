@@ -3,8 +3,7 @@ package com.chatop.api.controller;
 import com.chatop.api.model.Rental;
 import com.chatop.api.services.RentalService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org
-.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
