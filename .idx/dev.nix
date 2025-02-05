@@ -3,19 +3,20 @@
 { pkgs, ... }: {
   # Which nixpkgs channel to use.
   channel = "stable-23.11"; # or "unstable"
-  services = {
-    mysql = {
-      enable = true;
-    };
-  };
+  # services = {
+  #   mysql = {
+  #     enable = true;
+  #   };
+  # };
   # Use https://search.nixos.org/packages to find packages
   packages = [
     pkgs.zulu17
     pkgs.maven
     pkgs.docker-compose
     pkgs.nettools 
-    pkgs.nodejs_18
-    pkgs.socat
+    # pkgs.nodejs_18
+    # pkgs.socat
+    pkgs.mysql
   ];
   # Sets environment variables in the workspace
   env = {
@@ -28,25 +29,25 @@
       "vscjava.vscode-java-pack"
       "rangav.vscode-thunder-client"
     ];
-    previews = {
-      enable = true;
-      previews = {
-        web = {
-          command = [
-            "npm"
-            "run"
-            "start"
-            "--"
-            "--port"
-            "$PORT"
-            "--host"
-            "0.0.0.0"
-            "--disable-host-check"
-          ];
-          manager = "web";
-        };
-      };
-    };
+    # previews = {
+    #   enable = true;
+    #   previews = {
+    #     web = {
+    #       command = [
+    #         "npm"
+    #         "run"
+    #         "start"
+    #         "--"
+    #         "--port"
+    #         "$PORT"
+    #         "--host"
+    #         "0.0.0.0"
+    #         "--disable-host-check"
+    #       ];
+    #       manager = "web";
+    #     };
+    #   };
+    # };
     workspace = {
       onCreate = {
         install = ''
@@ -57,7 +58,9 @@
       onStart = {
       runServer = ''
             cd docker && docker-compose up -d 
-            socat TCP-LISTEN:3306,reuseaddr,fork TCP:db:3306 & # Start the proxy
+
+            # socat TCP-LISTEN:3306,reuseaddr,fork TCP:db:3306 & # Start the proxy
+            
             cd ../backend && mvn spring-boot:run &> /dev/null &
             cd ../frontend && ng serve 
         '';

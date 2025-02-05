@@ -17,7 +17,7 @@ services:
       PMA_HOST: db  # Hostname of the MySQL container
       MYSQL_ROOT_PASSWORD: root_password  # Same root password as MySQL
     ports:
-      - "8081:80"  # Expose phpMyAdmin on port 8080
+      - "8081:80"  # Expose phpMyAdmin on port 8080  
 
 volumes:
   mysql-data:
