@@ -18,8 +18,9 @@ public class RentalController {
 
     @GetMapping("/rentals")
     public ResponseEntity<List<Rental>> getAllRentals() {
-        List<Rental> rentals = rentalService.getAllRentals();
-        return new ResponseEntity<>(rentals, HttpStatus.OK);
+        // List<Rental> rentals = rentalService.getAllRentals();
+        // return new ResponseEntity<>(rentals, HttpStatus.OK);
+        return null;
     }
 
     @GetMapping("/rentals/{id}")
@@ -34,11 +35,18 @@ public class RentalController {
 
     @PostMapping("/rentals")
     public ResponseEntity<Rental> createRental(@RequestBody Rental rental) {
-      Rental savedRental = rentalService.saveRental(rental);
-      return new ResponseEntity<>(savedRental, HttpStatus.CREATED);
+        Rental savedRental = rentalService.saveRental(rental);
+        return new ResponseEntity<>(savedRental, HttpStatus.CREATED);
     }
 
-    // Add other endpoints (PUT, DELETE) as needed...
-    //PUT /rentals/{id}: Update an existing rental.
-    //DELETE /rentals/{id}
+    @PutMapping("/rentals/{id}")
+    public ResponseEntity<Rental> updateRental(@PathVariable Integer id, @RequestBody Rental rental) {
+        throw new UnsupportedOperationException("updateRental not implemented");
+    }
+
+    @DeleteMapping("/rentals/{id}")
+    public ResponseEntity<Void> deleteRental(@PathVariable Integer id) {
+        throw new UnsupportedOperationException("deleteRental not implemented");
+    }
+
 }

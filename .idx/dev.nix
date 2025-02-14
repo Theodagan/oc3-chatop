@@ -20,7 +20,7 @@
   ];
   # Sets environment variables in the workspace
   env = {
-    DATABASE_URL = "jdbc:mysql://localhost:3306/my_database?connectTimeout=5000&socketTimeout=5000"; # Modify this if needed
+    DATABASE_URL = "jdbc:mysql://localhost:3306/my_database?connectTimeout=5000&socketTimeout=5000";
     DATABASE_USER = "root";
     DATABASE_PASSWORD = "root_password";
   };
@@ -31,25 +31,6 @@
       "vscjava.vscode-java-pack"
       "rangav.vscode-thunder-client"
     ];
-    # previews = {
-    #   enable = true;
-    #   previews = {
-    #     web = {
-    #       command = [
-    #         "npm"
-    #         "run"
-    #         "start"
-    #         "--"
-    #         "--port"
-    #         "$PORT"
-    #         "--host"
-    #         "0.0.0.0"
-    #         "--disable-host-check"
-    #       ];
-    #       manager = "web";
-    #     };
-    #   };
-    # };
     workspace = {
       onCreate = {
         install = ''
@@ -59,11 +40,11 @@
       };
       onStart = {
       runServer = ''
-            # cd docker && docker-compose up -d             
-            # cd ../backend && mvn spring-boot:run &> /dev/null &
-            # cd ../frontend && ng serve 
-            cd backend && mvn spring-boot:run &> /dev/null &
+            cd docker && docker-compose up -d             
+            cd ../backend && mvn spring-boot:run &> /dev/null &
             cd ../frontend && ng serve 
+            # cd backend && mvn spring-boot:run &> /dev/null &
+            # cd ../frontend && ng serve 
         '';
       };
       

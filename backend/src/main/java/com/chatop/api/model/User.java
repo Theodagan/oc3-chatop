@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Entity
 @Table(name = "USERS")
@@ -22,10 +23,21 @@ public class User {
 
     private String password;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private Timestamp createdAt;
 
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    @PrePersist
+        protected void onCreate() {
+            createdAt = Timestamp.from(Instant.now());
+            updatedAt = Timestamp.from(Instant.now());
+        }
+
+        @PreUpdate
+        protected void onUpdate() {
+            updatedAt = Timestamp.from(Instant.now());
+        }
 
 }

@@ -12,11 +12,6 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User getConnectedUser() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getConnectedUser'");
-    }
-
     public Iterable<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -30,8 +25,11 @@ public class UserService {
 
 
     public User findByEmail(String email) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByEmail'");
+        return userRepository.findByEmail(email);
+    }
+
+    public User findById(int id) {
+        return userRepository.findById(id);
     }
 
 
