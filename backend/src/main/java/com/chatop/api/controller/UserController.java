@@ -62,6 +62,9 @@ public class UserController {
 
     @PostMapping("/auth/register")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
+        if(userService.findByEmail(user.getEmail()) != null){
+            return new ResponseEntity<>("User already exists", HttpStatus.BAD_REQUEST);
+        }
         userService.saveUser(user);
         return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
     }

@@ -19,8 +19,9 @@ public class UserService {
     public void saveUser(User user) {
         if(user != null){
             userRepository.save(user);
+            return;
         }
-        throw new UnsupportedOperationException("User not found");
+        throw new UnsupportedOperationException("User is null");
     }
 
 
