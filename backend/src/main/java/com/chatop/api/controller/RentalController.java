@@ -36,11 +36,11 @@ public class RentalController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/rentals/{id}")
-    public ResponseEntity<Rental> getRentalById(@PathVariable Integer id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getRentalById(@PathVariable Integer id) {
         Rental rental = rentalService.getRentalById(id);
         if (rental != null) {
-            return new ResponseEntity<>(rental, HttpStatus.OK);
+            return new ResponseEntity<>(parseRentalObject(rental), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
