@@ -41,7 +41,7 @@ public class FileController {
             }
 
             String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
-            String uploadDir = "/home/user/oc3-chatop/frontend/src/assets";
+            String uploadDir = "/home/user/oc3-chatop/frontend/src/assets/";
             File dir = new File(uploadDir);
 
             if (!dir.exists()) {

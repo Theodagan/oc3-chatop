@@ -1,6 +1,7 @@
 package com.chatop.api.controller;
 
 import com.chatop.api.model.Rental;
+import com.chatop.api.model.RentalForm;
 import com.chatop.api.services.RentalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,12 +51,21 @@ public class RentalController {
         }
     }
 
-    @PostMapping("/rentals")
-    public ResponseEntity<String> createRental(@RequestBody Rental rental, @RequestParam("file") MultipartFile file) {
-        if (!file.isEmpty()) {
+    @PostMapping("")
+    public ResponseEntity<String> createRental(@ModelAttribute RentalForm rentalForm) {
+        Rental rental = new Rental();
+        rental.setName(rentalForm.getName());
+        rental.setSurface(rentalForm.getSurface());
+        rental.setPrice(rentalForm.getPrice());
+        rental.setDescription(rentalForm.getDescription());
+        //TODO : getConnectedUSerId here
+        rental.setOwnerId(7); //PLACEHOLDER
+
+        MultipartFile file = rentalForm.getPicture();
+        if (file != null && !file.isEmpty()) {
             String imgUrl = fileController.handleFileUpload(file).getBody();
             rental.setPicture(imgUrl);
-        }else{
+        } else {
             return new ResponseEntity<>("No file uploaded", HttpStatus.BAD_REQUEST);
         }
 
