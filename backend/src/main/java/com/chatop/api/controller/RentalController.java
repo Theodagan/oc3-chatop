@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,9 @@ public class RentalController {
 
     @Autowired
     private RentalService rentalService;
+
+    @Autowired
+    private FileController fileController;
 
     @GetMapping("")
     public ResponseEntity<Map<String, List<Object>>> getAllRentals() {
@@ -47,13 +51,21 @@ public class RentalController {
     }
 
     @PostMapping("/rentals")
-    public ResponseEntity<Rental> createRental(@RequestBody Rental rental) {
-        Rental savedRental = rentalService.saveRental(rental);
-        return new ResponseEntity<>(savedRental, HttpStatus.CREATED);
+    public ResponseEntity<String> createRental(@RequestBody Rental rental, @RequestParam("file") MultipartFile file) {
+        if (!file.isEmpty()) {
+            String imgUrl = fileController.handleFileUpload(file).getBody();
+            rental.setPicture(imgUrl);
+        }else{
+            return new ResponseEntity<>("No file uploaded", HttpStatus.BAD_REQUEST);
+        }
+
+        rentalService.saveRental(rental);
+        return new ResponseEntity<>("Rental created", HttpStatus.CREATED);
     }
 
     @PutMapping("/rentals/{id}")
     public ResponseEntity<Rental> updateRental(@PathVariable Integer id, @RequestBody Rental rental) {
+        
         throw new UnsupportedOperationException("updateRental not implemented");
     }
 

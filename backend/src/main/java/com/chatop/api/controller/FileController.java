@@ -3,7 +3,6 @@ package com.chatop.api.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -32,7 +31,7 @@ public class FileController {
     }
 
     //@PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> handleFileUpload(MultipartFile file) {
         try {
             if (file.isEmpty() || !isValidImageFile(file)) {
                 return new ResponseEntity<>("Please select a file to upload", HttpStatus.BAD_REQUEST);
