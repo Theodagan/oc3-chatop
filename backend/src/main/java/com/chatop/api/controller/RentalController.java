@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/rentals")
@@ -16,11 +19,21 @@ public class RentalController {
     @Autowired
     private RentalService rentalService;
 
-    @GetMapping("/rentals")
-    public ResponseEntity<List<Rental>> getAllRentals() {
-        // List<Rental> rentals = rentalService.getAllRentals();
-        // return new ResponseEntity<>(rentals, HttpStatus.OK);
-        return null;
+    @GetMapping("")
+    public ResponseEntity<Map<String, List<Object>>> getAllRentals() {
+
+        List<Rental> rentals = rentalService.getAllRentals(); 
+        List<Object> tmpList = new ArrayList<Object>();
+        Map<String, List<Object>> response = new HashMap<>();
+
+        for(Rental rental : rentals){
+            tmpList.add(parseRentalObject(rental));
+        }
+        if(!tmpList.isEmpty()){
+            response.put("rentals", tmpList);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/rentals/{id}")
@@ -47,6 +60,23 @@ public class RentalController {
     @DeleteMapping("/rentals/{id}")
     public ResponseEntity<Void> deleteRental(@PathVariable Integer id) {
         throw new UnsupportedOperationException("deleteRental not implemented");
+    }
+
+    private Object parseRentalObject (Rental rental){
+        Map<String, Object> parsedObject = new HashMap<>();
+
+        // Renaming field to match rentalResponse.interface.ts
+        parsedObject.put("id", rental.getId()); 
+        parsedObject.put("name", rental.getName()); 
+        parsedObject.put("surface", rental.getSurface()); 
+        parsedObject.put("price", rental.getPrice()); 
+        parsedObject.put("picture", rental.getPicture()); 
+        parsedObject.put("description", rental.getDescription()); 
+        parsedObject.put("owner_id", rental.getOwnerId()); 
+        parsedObject.put("created_at", rental.getCreatedAt()); 
+        parsedObject.put("updated_at", rental.getUpdatedAt()); 
+
+        return parsedObject; 
     }
 
 }

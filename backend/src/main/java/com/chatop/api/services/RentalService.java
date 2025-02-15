@@ -30,7 +30,6 @@ public class RentalService {
     }
 
     public List<Rental> getAllRentals() {
-        //TODO : dvp getAllRentals
-        throw new UnsupportedOperationException("Unimplemented method 'getAllRentals'");
+        return rentalRepository.findAll();
     }
 }
