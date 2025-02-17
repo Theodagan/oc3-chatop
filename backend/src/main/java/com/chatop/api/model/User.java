@@ -30,14 +30,14 @@ public class User {
     private Timestamp updatedAt;
 
     @PrePersist
-        protected void onCreate() {
-            createdAt = Timestamp.from(Instant.now());
-            updatedAt = Timestamp.from(Instant.now());
-        }
+    protected void onCreate() {
+        createdAt = Timestamp.from(Instant.now());
+        updatedAt = Timestamp.from(Instant.now());
+    }
 
-        @PreUpdate
-        protected void onUpdate() {
-            updatedAt = Timestamp.from(Instant.now());
-        }
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = Timestamp.from(Instant.now());
+    }
 
 }

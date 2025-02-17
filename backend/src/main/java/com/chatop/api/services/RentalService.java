@@ -30,7 +30,13 @@ public class RentalService {
     }
 
     public List<Rental> getAllRentals() {
-        //TODO : dvp getAllRentals
-        throw new UnsupportedOperationException("Unimplemented method 'getAllRentals'");
+        return rentalRepository.findAll();
+    }
+
+    public void deleteRental(Integer id) {
+        Optional<Rental> rental = rentalRepository.findById(id);
+        if(rental.isPresent()){
+            rentalRepository.deleteById(id);
+        }else throw new RuntimeException("Rental not found");
     }
 }

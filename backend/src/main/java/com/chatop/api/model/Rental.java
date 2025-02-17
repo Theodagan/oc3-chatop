@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Entity
 @Table(name = "RENTALS")
@@ -35,5 +36,16 @@ public class Rental {
 
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = Timestamp.from(Instant.now());
+        updatedAt = Timestamp.from(Instant.now());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = Timestamp.from(Instant.now());
+    }
 
 }

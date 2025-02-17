@@ -3,8 +3,6 @@ package com.chatop.api.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -32,22 +30,25 @@ public class FileController {
         return false;
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    //@PostMapping("/upload")
+    public ResponseEntity<String> handleFileUpload(MultipartFile file) {
         try {
             if (file.isEmpty() || !isValidImageFile(file)) {
                 return new ResponseEntity<>("Please select a file to upload", HttpStatus.BAD_REQUEST);
             }
+            if (file.getSize() > 10000000) {
+                return new ResponseEntity<>("File is too big", HttpStatus.BAD_REQUEST);
+            }
 
             String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
-            String uploadDir = "uploads/";
+            String uploadDir = "/home/user/oc3-chatop/frontend/src/assets/";
             File dir = new File(uploadDir);
 
             if (!dir.exists()) {
-                dir.mkdirs();
+                return new ResponseEntity<>("Uploads Directory not found", HttpStatus.INTERNAL_SERVER_ERROR);
             }
             Files.copy(file.getInputStream(), Paths.get(uploadDir + fileName));
-            return new ResponseEntity<>("File uploaded successfully: " + fileName, HttpStatus.OK);
+            return new ResponseEntity<>("assets/" + fileName, HttpStatus.OK);
         }catch (IOException e) {
             return new ResponseEntity<>("Could not upload the file!", HttpStatus.INTERNAL_SERVER_ERROR);
         }

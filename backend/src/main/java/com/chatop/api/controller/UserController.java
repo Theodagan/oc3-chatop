@@ -46,6 +46,18 @@ public class UserController {
         return returnString;
     }
 
+    @GetMapping("/user/{id}") //listAllUsers
+    public Object getUserById(@PathVariable Integer id) { 
+        //TODO : change to actual user
+        Map<String, Object> mockUser = new HashMap<>();
+        mockUser.put("id", 2);
+        mockUser.put("name", "Owner Name");
+        mockUser.put("email", "test@test.com");
+        mockUser.put("created_at", "2022/02/02");
+        mockUser.put("updated_at", "2022/08/02");
+        return userService.findById(2);
+    }
+
     @GetMapping("/auth/me")
     public ResponseEntity<User> me(@RequestHeader("Authorization") String authorizationHeader) {
         
