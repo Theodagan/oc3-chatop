@@ -1,6 +1,7 @@
 package com.chatop.api.controller;
 
 import com.chatop.api.model.Message;
+import com.chatop.api.model.MessageForm;
 import com.chatop.api.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,11 +18,13 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    @PostMapping("/message")
-    public ResponseEntity<String> createMessage(@RequestBody Message message) {
-        if(message.getMessage() == null || message.getRentalId() == null || message.getUserId() == null) {
-            return new ResponseEntity<>("Missing informations", HttpStatus.BAD_REQUEST);
-        }
+    @PostMapping("/api/messages")
+    public ResponseEntity<String> createMessage(@RequestBody MessageForm messageDTO) {
+
+        Message message = new Message();
+        message.setRentalId(messageDTO.getRental_id());
+        message.setUserId(messageDTO.getUser_id());
+        message.setMessage(messageDTO.getMessage());
 
         message.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
         messageService.saveMessage(message);
