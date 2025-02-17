@@ -19,12 +19,12 @@ public class MessageController {
     private MessageService messageService;
 
     @PostMapping("/api/messages")
-    public ResponseEntity<String> createMessage(@RequestBody MessageForm messageDTO) {
+    public ResponseEntity<String> createMessage(@RequestBody MessageForm messageData) {
 
         Message message = new Message();
-        message.setRentalId(messageDTO.getRental_id());
-        message.setUserId(messageDTO.getUser_id());
-        message.setMessage(messageDTO.getMessage());
+        message.setRentalId(messageData.getRental_id());
+        message.setUserId(messageData.getUser_id());
+        message.setMessage(messageData.getMessage());
 
         message.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
         messageService.saveMessage(message);
