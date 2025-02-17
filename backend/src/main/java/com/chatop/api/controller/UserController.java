@@ -3,6 +3,8 @@ package com.chatop.api.controller;
 import com.chatop.api.model.User;
 import com.chatop.api.services.UserService;
 
+import jakarta.servlet.http.HttpSession;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+
 
 //import java.util.Optional;
 
@@ -20,32 +24,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //TEST --------------------------------------------------------------
-    @GetMapping("/user/test")
-    public String test() { 
-        //return "coucou les patissiers";
-        Iterable<User> allUsers = userService.getAllUsers();
-        if(!allUsers.iterator().hasNext()){
-            System.out.println("No users found in the database.");
-            return "No users found in the database.";
-        }
-        for(User user : allUsers){
-            System.out.println("coucou" + user.getName());
-        } return "testtttt <br> test";
-    }
+    @Autowired
+    private HttpSession httpSession;
 
-    //TEST --------------------------------------------------------------
-    @GetMapping("/user/lau") //listAllUsers
-    public String lau() { 
-        String returnString = "";
-        Iterable<User> allUsers = userService.getAllUsers();
-        if(!allUsers.iterator().hasNext()){
-            return "No users found in the database.";
-        }
-        for(User user : allUsers){
-            returnString += user.toString() + "<br><br>";
-        } 
-        return returnString;
+    public Integer getConnectedUserId() {
+        Object userIdObject = httpSession.getAttribute("userId");
+        return userIdObject != null ? Integer.parseInt(userIdObject.toString()) : null;
     }
 
     @GetMapping("/user/{id}") 
@@ -87,6 +71,9 @@ public class UserController {
             return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
         }
         Map<String, Object> response = new HashMap<>();
+
+        httpSession.setAttribute("userId", foundUser.getId());
+
         response.put("user", foundUser);
         response.put("token", generateToken(foundUser));
 
@@ -105,8 +92,10 @@ public class UserController {
 
     private User validateToken(String token) {
         //TODO : implement real token logic
+        //getUserByToken(token)
 
         int tokenId = Integer.parseInt(token.substring(5));
+
         return userService.findById(tokenId);
     }
 
