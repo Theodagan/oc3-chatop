@@ -58,6 +58,7 @@ public class RentalController {
         rental.setSurface(rentalForm.getSurface());
         rental.setPrice(rentalForm.getPrice());
         rental.setDescription(rentalForm.getDescription());
+
         //TODO : getConnectedUSerId here
         rental.setOwnerId(7); //PLACEHOLDER
 
@@ -73,15 +74,31 @@ public class RentalController {
         return new ResponseEntity<>("Rental created", HttpStatus.CREATED);
     }
 
-    @PutMapping("/rentals/{id}")
-    public ResponseEntity<Rental> updateRental(@PathVariable Integer id, @RequestBody Rental rental) {
-        
-        throw new UnsupportedOperationException("updateRental not implemented");
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateRental(@PathVariable Integer id, @ModelAttribute RentalForm rentalForm) {
+        Rental rental = rentalService.getRentalById(id);
+        if(rental == null){
+            return new ResponseEntity<>("Rental not found", HttpStatus.NOT_FOUND);
+        }
+
+        rental.setName(rentalForm.getName());
+        rental.setSurface(rentalForm.getSurface());
+        rental.setPrice(rentalForm.getPrice());
+        rental.setDescription(rentalForm.getDescription());
+
+        rentalService.saveRental(rental);
+
+        return new ResponseEntity<>("Rental updated", HttpStatus.OK);
     }
 
-    @DeleteMapping("/rentals/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRental(@PathVariable Integer id) {
-        throw new UnsupportedOperationException("deleteRental not implemented");
+        Rental rental = rentalService.getRentalById(id);
+        if(rental == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        rentalService.deleteRental(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private Object parseRentalObject (Rental rental){

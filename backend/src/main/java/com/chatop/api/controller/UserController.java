@@ -55,7 +55,7 @@ public class UserController {
         mockUser.put("email", "test@test.com");
         mockUser.put("created_at", "2022/02/02");
         mockUser.put("updated_at", "2022/08/02");
-        return userService.findById(1);
+        return userService.findById(2);
     }
 
     @GetMapping("/auth/me")

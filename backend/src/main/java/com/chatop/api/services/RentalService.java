@@ -32,4 +32,11 @@ public class RentalService {
     public List<Rental> getAllRentals() {
         return rentalRepository.findAll();
     }
+
+    public void deleteRental(Integer id) {
+        Optional<Rental> rental = rentalRepository.findById(id);
+        if(rental.isPresent()){
+            rentalRepository.deleteById(id);
+        }else throw new RuntimeException("Rental not found");
+    }
 }
