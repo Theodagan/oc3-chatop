@@ -45,6 +45,7 @@ public class DbUserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     
@@ -64,7 +65,7 @@ public class DbUserController {
         
         // Check if the Authorization header is valid
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         String token = authorizationHeader.substring(7); // Remove "Bearer "
@@ -115,9 +116,25 @@ public class DbUserController {
             
         } catch (BadCredentialsException e) {
             // Return unauthorized error if authentication fails
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid credentials"));
+            e.printStackTrace();
+
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Invalid credentials");
+            errorResponse.put("debugMessage", e.getMessage());
+            errorResponse.put("extra1", "Bad credentials for user: " + user.getEmail());
+            errorResponse.put("exceptionType", e.getClass().getName());
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "An error occurred"));
+            e.printStackTrace(); // Add this to print the full exception stack trace
+            System.out.println("An error occurred during login for user: " + user.getEmail());
+            
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "A login error occurred");
+            errorResponse.put("debugMessage", e.getMessage());
+            errorResponse.put("exceptionType", e.getClass().getName());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 

@@ -49,8 +49,8 @@ public class SpringSecurityConfig {
             .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth ->
-                    auth.requestMatchers("/auth/**").permitAll()
-                        .anyRequest().authenticated()
+                auth.requestMatchers("/api/auth/**").permitAll()
+                    .anyRequest().authenticated()
             );
 
         http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -58,9 +58,9 @@ public class SpringSecurityConfig {
         return http.build();
     }
 
-     @Bean
+    @Bean
     public JwtRequestFilter jwtRequestFilter() {
         return new JwtRequestFilter(jwtUtils, dbUserDetailsService);
     }
 
-}
+}     
