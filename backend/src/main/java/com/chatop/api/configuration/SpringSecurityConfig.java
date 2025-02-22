@@ -1,3 +1,4 @@
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:313263501.
 package com.chatop.api.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,14 +44,20 @@ public class SpringSecurityConfig {
     }
 
     @Bean
+    // Configures the security filter chain for HTTP requests.
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            // Disables CSRF protection.
             .csrf(csrf -> csrf.disable())
+            // Sets the custom authentication entry point for handling unauthorized access.
             .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+            // Configures session management to be stateless.
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            // Configures authorization rules for HTTP requests.
             .authorizeHttpRequests(auth ->
-                auth.requestMatchers("/api/auth/**").permitAll()
-                    .anyRequest().authenticated()
+                auth
+                    .requestMatchers("/api/auth/**").permitAll() 
+                    .anyRequest().authenticated() // Requires authentication for any other request.
             );
 
         http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);

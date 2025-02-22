@@ -63,9 +63,7 @@ public class RentalController {
         rental.setPrice(rentalForm.getPrice());
         rental.setDescription(rentalForm.getDescription());
 
-        //TODO : getConnectedUSerId here
-        //rental.setOwnerId(7); //PLACEHOLDER
-        rental.setOwnerId(dbUserController.getConnectedUserId());
+        rental.setOwnerId(dbUserController.getCurrentUserId());
 
         MultipartFile file = rentalForm.getPicture();
         if (file != null && !file.isEmpty()) {

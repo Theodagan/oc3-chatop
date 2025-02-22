@@ -1,6 +1,7 @@
 package com.chatop.api.controller;
 
 import com.chatop.api.model.DbUser;
+import com.chatop.api.model.meDTO;
 import com.chatop.api.services.DbUserDetailsService;
 import com.chatop.api.services.DbUserService;
 import com.chatop.api.utils.JwtUtils;
@@ -61,7 +62,7 @@ public class DbUserController {
     }
 
     @GetMapping("/auth/me")
-    public ResponseEntity<DbUser> me(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<meDTO> me(@RequestHeader("Authorization") String authorizationHeader) {
         
         // Check if the Authorization header is valid
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -74,14 +75,29 @@ public class DbUserController {
         String username = jwtUtils.extractUsername(token);
 
         // Find the user by the extracted username
-        DbUser user = dbUserService.findByEmail(username);
+        DbUser user = dbUserService.findByEmail(username);        
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        meDTO dto = new meDTO(user.getId(), user.getEmail(), user.getName(), user.getCreatedAt(), user.getUpdatedAt());
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
         
     }
+
+    public Integer getCurrentUserId(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String currentUserName = authentication.getName();
+            DbUser currentUser = dbUserService.findByEmail(currentUserName);
+            if (currentUser != null) {
+                return currentUser.getId();
+            }
+        }
+        return null;
+    }
+
 
     @PostMapping("/auth/register")
     public ResponseEntity<String> registerUser(@RequestBody DbUser user) {
