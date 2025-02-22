@@ -1,7 +1,7 @@
 package com.chatop.api.controller;
 
-import com.chatop.api.model.User;
-import com.chatop.api.services.UserService;
+import com.chatop.api.model.DbUser;
+import com.chatop.api.services.DbUserService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private DbUserService userService;
 
     @Autowired
     private HttpSession httpSession;
@@ -38,11 +38,11 @@ public class UserController {
     }
 
     @GetMapping("/auth/me")
-    public ResponseEntity<User> me(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<DbUser> me(@RequestHeader("Authorization") String authorizationHeader) {
         
         String token = authorizationHeader.substring(7); // Remove "Bearer "
         
-        User user = validateToken(token);
+        DbUser user = validateToken(token);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
@@ -52,7 +52,7 @@ public class UserController {
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
+    public ResponseEntity<String> registerUser(@RequestBody DbUser user) {
         if(userService.findByEmail(user.getEmail()) != null){
             return new ResponseEntity<>("User already exists", HttpStatus.BAD_REQUEST);
         }
@@ -61,9 +61,9 @@ public class UserController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody DbUser user) {
 
-        User foundUser = userService.findByEmail(user.getEmail());
+        DbUser foundUser = userService.findByEmail(user.getEmail());
 
         if (foundUser == null || !foundUser.getPassword().equals(user.getPassword())) {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -84,13 +84,13 @@ public class UserController {
 
 
 
-    private String generateToken(User user){
+    private String generateToken(DbUser user){
         //TODO : implement real token logic
 
         return "token" + user.getId().toString();
     }
 
-    private User validateToken(String token) {
+    private DbUser validateToken(String token) {
         //TODO : implement real token logic
         //getUserByToken(token)
 
