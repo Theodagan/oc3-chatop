@@ -27,7 +27,6 @@ public class RentalController {
     @Autowired
     private DbUserController dbUserController;
 
-
     @GetMapping("")
     public ResponseEntity<Map<String, List<Object>>> getAllRentals() {
 
