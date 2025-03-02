@@ -40,14 +40,16 @@ public class FileController {
             }
 
             String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
-            String uploadDir = "/home/user/oc3-chatop/frontend/src/assets/";
+            // String uploadDir = "/home/user/oc3-chatop/frontend/src/assets/";
+            String uploadDir = "/home/user/oc3-chatop/backend/src/main/resources/static/uploads/";
             File dir = new File(uploadDir);
 
             if (!dir.exists()) {
                 return new ResponseEntity<>("Uploads Directory not found", HttpStatus.INTERNAL_SERVER_ERROR);
             }
+            String baseUrl = "3001-idx-oc3-chatop-1737992916895.cluster-qtqwjj3wgzff6uxtk26wj7fzq6.cloudworkstations.dev/";
             Files.copy(file.getInputStream(), Paths.get(uploadDir + fileName));
-            return new ResponseEntity<>("assets/" + fileName, HttpStatus.OK);
+            return new ResponseEntity<>(baseUrl + "uploads/" + fileName, HttpStatus.OK);
         }catch (IOException e) {
             return new ResponseEntity<>("Could not upload the file!", HttpStatus.INTERNAL_SERVER_ERROR);
         }

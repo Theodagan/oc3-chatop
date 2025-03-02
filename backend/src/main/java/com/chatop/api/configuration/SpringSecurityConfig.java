@@ -57,6 +57,7 @@ public class SpringSecurityConfig {
             .authorizeHttpRequests(auth ->
                 auth
                     .requestMatchers("/api/auth/**").permitAll() 
+                    .requestMatchers("/uploads/**").permitAll() 
                     .anyRequest().authenticated() // Requires authentication for any other request.
             );
 
