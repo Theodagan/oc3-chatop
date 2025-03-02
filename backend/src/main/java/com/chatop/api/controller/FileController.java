@@ -30,7 +30,6 @@ public class FileController {
         return false;
     }
 
-    //@PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(MultipartFile file) {
         try {
             if (file.isEmpty() || !isValidImageFile(file)) {

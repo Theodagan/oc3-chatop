@@ -25,8 +25,7 @@ public class RentalController {
     private FileController fileController;
 
     @Autowired
-    private UserController userController;
-
+    private DbUserController dbUserController;
 
     @GetMapping("")
     public ResponseEntity<Map<String, List<Object>>> getAllRentals() {
@@ -63,9 +62,7 @@ public class RentalController {
         rental.setPrice(rentalForm.getPrice());
         rental.setDescription(rentalForm.getDescription());
 
-        //TODO : getConnectedUSerId here
-        //rental.setOwnerId(7); //PLACEHOLDER
-        rental.setOwnerId(userController.getConnectedUserId());
+        rental.setOwnerId(dbUserController.getCurrentUserId());
 
         MultipartFile file = rentalForm.getPicture();
         if (file != null && !file.isEmpty()) {
