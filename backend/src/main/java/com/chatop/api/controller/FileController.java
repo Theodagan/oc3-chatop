@@ -47,9 +47,9 @@ public class FileController {
             if (!dir.exists()) {
                 return new ResponseEntity<>("Uploads Directory not found", HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            String baseUrl = "3001-idx-oc3-chatop-1737992916895.cluster-qtqwjj3wgzff6uxtk26wj7fzq6.cloudworkstations.dev/";
+            //String baseUrl = "3001-idx-oc3-chatop-1737992916895.cluster-qtqwjj3wgzff6uxtk26wj7fzq6.cloudworkstations.dev/";
             Files.copy(file.getInputStream(), Paths.get(uploadDir + fileName));
-            return new ResponseEntity<>(baseUrl + "uploads/" + fileName, HttpStatus.OK);
+            return new ResponseEntity<>("uploads/" + fileName, HttpStatus.OK);
         }catch (IOException e) {
             return new ResponseEntity<>("Could not upload the file!", HttpStatus.INTERNAL_SERVER_ERROR);
         }

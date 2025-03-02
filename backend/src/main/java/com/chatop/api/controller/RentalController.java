@@ -30,11 +30,15 @@ public class RentalController {
     @GetMapping("")
     public ResponseEntity<Map<String, List<Object>>> getAllRentals() {
 
+        //[port]-$WEB_HOST 
+        String baseImgUrl = "https://3001-idx-oc3-chatop-1737992916895.cluster-qtqwjj3wgzff6uxtk26wj7fzq6.cloudworkstations.dev/";
+
         List<Rental> rentals = rentalService.getAllRentals(); 
         List<Object> tmpList = new ArrayList<Object>();
         Map<String, List<Object>> response = new HashMap<>();
 
         for(Rental rental : rentals){
+            rental.setPicture(baseImgUrl + rental.getPicture());
             tmpList.add(parseRentalObject(rental));
         }
         if(!tmpList.isEmpty()){
