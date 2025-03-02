@@ -23,6 +23,7 @@
     DATABASE_URL = "jdbc:mysql://localhost:3306/my_database?connectTimeout=5000&socketTimeout=5000";
     DATABASE_USER = "root";
     DATABASE_PASSWORD = "root_password";
+    JWT_SECRET = "f8o0oT86H8JzWv7tZ/N8zHn844vFpYJ67+Wq8Yt39vM=";
   };
   services.docker.enable = true;
   idx = {

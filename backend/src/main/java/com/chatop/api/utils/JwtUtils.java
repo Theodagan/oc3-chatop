@@ -34,13 +34,22 @@ public class JwtUtils {
     }
         
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return Jwts.builder()
+       try{
+            return Jwts.builder()
             .setClaims(extraClaims)
             .setSubject(userDetails.getUsername())
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis() + expiration))
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact();
+       } catch (Exception e){
+            // Log the error (this is crucial for debugging!)
+            System.err.println("Error generating the JWT token: " + e.getMessage());
+            // Or use a proper logger: logger.error("Error decoding or creating JWT key", e);
+    
+            // Throw a custom exception
+            throw new RuntimeException("Error generating the JWT token", e); 
+     }
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
