@@ -44,8 +44,6 @@
             cd docker && docker-compose up -d             
             cd ../backend && mvn spring-boot:run &> /dev/null &
             cd ../frontend && ng serve 
-            # cd backend && mvn spring-boot:run &> /dev/null &
-            # cd ../frontend && ng serve 
         '';
       };
       
