@@ -3,11 +3,14 @@ package com.chatop.api.controller;
 import com.chatop.api.model.Rental;
 import com.chatop.api.model.RentalForm;
 import com.chatop.api.services.RentalService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,17 +19,18 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/rentals")
+@SecurityRequirement(name = "Bearer Authentication")
 public class RentalController {
-
+    
     @Autowired
     private RentalService rentalService;
-
+    
     @Autowired
     private FileController fileController;
-
+    
     @Autowired
     private DbUserController dbUserController;
-
+    
     @GetMapping("")
     public ResponseEntity<Map<String, List<Object>>> getAllRentals() {
 
