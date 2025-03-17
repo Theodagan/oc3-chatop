@@ -19,10 +19,10 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
 
-    @Value("${jwt.secret}") // you will need to add jwt.secret to you application.properties file.
+    @Value("${jwt.secret}") 
     private String secret;
 
-    @Value("${jwt.expiration}") // You'll need to add jwt.expiration to your application.properties file
+    @Value("${jwt.expiration}") 
     private long expiration;
 
     public String extractUsername(String token) {
@@ -34,13 +34,18 @@ public class JwtUtils {
     }
         
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return Jwts.builder()
+       try{
+            return Jwts.builder()
             .setClaims(extraClaims)
             .setSubject(userDetails.getUsername())
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis() + expiration))
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact();
+       } catch (Exception e){
+            System.err.println("Error generating the JWT token: " + e.getMessage());    
+            throw new RuntimeException("Error generating the JWT token"); 
+     }
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -61,7 +66,6 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // TOKEN RELATED
     public boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));

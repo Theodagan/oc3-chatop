@@ -23,9 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-
-
-//import java.util.Optional;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api")
@@ -56,11 +54,13 @@ public class DbUserController {
         return userIdObject != null ? Integer.parseInt(userIdObject.toString()) : null;
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/user/{id}") 
     public Object getUserById(@PathVariable Integer id) { 
         return dbUserService.findById(id);
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/auth/me")
     public ResponseEntity<meDTO> me(@RequestHeader("Authorization") String authorizationHeader) {
         
@@ -86,6 +86,7 @@ public class DbUserController {
         
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     public Integer getCurrentUserId(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
@@ -131,8 +132,6 @@ public class DbUserController {
             return ResponseEntity.ok(response);
             
         } catch (BadCredentialsException e) {
-            // Return unauthorized error if authentication fails
-            e.printStackTrace();
 
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "Invalid credentials");
@@ -142,7 +141,6 @@ public class DbUserController {
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         } catch (Exception e){
-            e.printStackTrace(); // Add this to print the full exception stack trace
             System.out.println("An error occurred during login for user: " + user.getEmail());
             
             Map<String, Object> errorResponse = new HashMap<>();
