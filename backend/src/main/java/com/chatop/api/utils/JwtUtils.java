@@ -19,10 +19,10 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
 
-    @Value("${jwt.secret}") // you will need to add jwt.secret to you application.properties file.
+    @Value("${jwt.secret}") 
     private String secret;
 
-    @Value("${jwt.expiration}") // You'll need to add jwt.expiration to your application.properties file
+    @Value("${jwt.expiration}") 
     private long expiration;
 
     public String extractUsername(String token) {
@@ -43,12 +43,8 @@ public class JwtUtils {
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact();
        } catch (Exception e){
-            // Log the error (this is crucial for debugging!)
-            System.err.println("Error generating the JWT token: " + e.getMessage());
-            // Or use a proper logger: logger.error("Error decoding or creating JWT key", e);
-    
-            // Throw a custom exception
-            throw new RuntimeException("Error generating the JWT token", e); 
+            System.err.println("Error generating the JWT token: " + e.getMessage());    
+            throw new RuntimeException("Error generating the JWT token"); 
      }
     }
 
@@ -70,7 +66,6 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // TOKEN RELATED
     public boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));

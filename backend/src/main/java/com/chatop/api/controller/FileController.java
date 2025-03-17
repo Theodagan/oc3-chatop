@@ -4,6 +4,7 @@ package com.chatop.api.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.multipart.MultipartFile;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import java.io.File;
@@ -12,7 +13,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
+@SecurityRequirement(name = "Bearer Authentication")
 public class FileController {
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     private static final String[] ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/gif"};
@@ -40,14 +44,12 @@ public class FileController {
             }
 
             String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
-            // String uploadDir = "/home/user/oc3-chatop/frontend/src/assets/";
             String uploadDir = "/home/user/oc3-chatop/backend/src/main/resources/static/uploads/";
             File dir = new File(uploadDir);
 
             if (!dir.exists()) {
                 return new ResponseEntity<>("Uploads Directory not found", HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            //String baseUrl = "3001-idx-oc3-chatop-1737992916895.cluster-qtqwjj3wgzff6uxtk26wj7fzq6.cloudworkstations.dev/";
             Files.copy(file.getInputStream(), Paths.get(uploadDir + fileName));
             return new ResponseEntity<>("uploads/" + fileName, HttpStatus.OK);
         }catch (IOException e) {

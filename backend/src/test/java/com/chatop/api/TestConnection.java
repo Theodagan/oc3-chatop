@@ -13,8 +13,6 @@ public class TestConnection {
         //String url = "jdbc:mysql://3306-idx-oc3-chatop-1737992916895.cluster-qtqwjj3wgzff6uxtk26wj7fzq6.cloudworkstations.dev/my_database?connectTimeout=5000&socketTimeout=5000";
 
         // String url = "jdbc:mysql://db:3306/my_database?connectTimeout=5000&socketTimeout=5000";
-        // String user = "root";
-        // String password = "root_password";
 
         String url = System.getenv("DATABASE_URL"); // Get from environment variable
         String user = System.getenv("DATABASE_USER");

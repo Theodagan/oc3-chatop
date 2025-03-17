@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class RentalController {
     private DbUserController dbUserController;
     
     @GetMapping("")
+    @Operation(summary = "Get all rentals", description = "Returns all rentals as ")
     public ResponseEntity<Map<String, List<Object>>> getAllRentals() {
 
         //[port]-$WEB_HOST 
@@ -41,10 +43,12 @@ public class RentalController {
         List<Object> tmpList = new ArrayList<Object>();
         Map<String, List<Object>> response = new HashMap<>();
 
+        //add images to rental objects
         for(Rental rental : rentals){
             rental.setPicture(baseImgUrl + rental.getPicture());
             tmpList.add(parseRentalObject(rental));
         }
+        //parse rentals list for correct front-end format
         if(!tmpList.isEmpty()){
             response.put("rentals", tmpList);
         }
@@ -53,6 +57,7 @@ public class RentalController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get a rental by id", description = "Returns a rental as per the id")
     public ResponseEntity<Object> getRentalById(@PathVariable Integer id) {
         Rental rental = rentalService.getRentalById(id);
         if (rental != null) {
