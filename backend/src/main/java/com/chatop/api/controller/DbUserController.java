@@ -86,7 +86,7 @@ public class DbUserController {
         
     }
 
-    @SecurityRequirement(name = "Bearer Authentication")
+    /* @SecurityRequirement(name = "Bearer Authentication")
     public Integer getCurrentUserId(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
@@ -97,7 +97,7 @@ public class DbUserController {
             }
         }
         return null;
-    }
+    } */
 
 
     @PostMapping("/auth/register")
@@ -151,7 +151,5 @@ public class DbUserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-
-
 
 }

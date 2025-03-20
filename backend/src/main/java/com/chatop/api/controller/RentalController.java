@@ -2,6 +2,7 @@ package com.chatop.api.controller;
 
 import com.chatop.api.model.Rental;
 import com.chatop.api.model.RentalForm;
+import com.chatop.api.services.DbUserService;
 import com.chatop.api.services.RentalService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,11 @@ public class RentalController {
     @Autowired
     private FileController fileController;
     
-    @Autowired
-    private DbUserController dbUserController;
+    // @Autowired
+    // private DbUserController dbUserController;
+
+    @Autowired 
+    private DbUserService dbUserService;
     
     @GetMapping("")
     @Operation(summary = "Get all rentals", description = "Returns all rentals as ")
@@ -46,7 +50,7 @@ public class RentalController {
         //add images to rental objects
         for(Rental rental : rentals){
             rental.setPicture(baseImgUrl + rental.getPicture());
-            tmpList.add(parseRentalObject(rental));
+            tmpList.add(rentalService.parseRentalObject(rental));
         }
         //parse rentals list for correct front-end format
         if(!tmpList.isEmpty()){
@@ -61,7 +65,7 @@ public class RentalController {
     public ResponseEntity<Object> getRentalById(@PathVariable Integer id) {
         Rental rental = rentalService.getRentalById(id);
         if (rental != null) {
-            return new ResponseEntity<>(parseRentalObject(rental), HttpStatus.OK);
+            return new ResponseEntity<>(rentalService.parseRentalObject(rental), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -75,7 +79,7 @@ public class RentalController {
         rental.setPrice(rentalForm.getPrice());
         rental.setDescription(rentalForm.getDescription());
 
-        rental.setOwnerId(dbUserController.getCurrentUserId());
+        rental.setOwnerId(dbUserService.getCurrentUserId());
 
         MultipartFile file = rentalForm.getPicture();
         if (file != null && !file.isEmpty()) {
@@ -116,7 +120,7 @@ public class RentalController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private Object parseRentalObject (Rental rental){
+    /* private Object parseRentalObject (Rental rental){
         Map<String, Object> parsedObject = new HashMap<>();
 
         // Renaming field to match rentalResponse.interface.ts
@@ -131,6 +135,6 @@ public class RentalController {
         parsedObject.put("updated_at", rental.getUpdatedAt()); 
 
         return parsedObject; 
-    }
+    } */
 
 }
