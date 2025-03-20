@@ -1,23 +1,16 @@
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:1925231942.
-package com.chatop.api.controller;
-
-import org.springframework.web.bind.annotation.RestController;
+package com.chatop.api.services;
 
 import org.springframework.web.multipart.MultipartFile;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-@RestController
-@SecurityRequirement(name = "Bearer Authentication")
-public class FileController {
+@Service
+public class FileService {
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     private static final String[] ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/gif"};
 
@@ -34,13 +27,13 @@ public class FileController {
         return false;
     }
 
-    public ResponseEntity<String> handleFileUpload(MultipartFile file) {
+    public String handleFileUpload(MultipartFile file) {
         try {
             if (file.isEmpty() || !isValidImageFile(file)) {
-                return new ResponseEntity<>("Please select a file to upload", HttpStatus.BAD_REQUEST);
+                return "Please select a file to upload";
             }
             if (file.getSize() > 10000000) {
-                return new ResponseEntity<>("File is too big", HttpStatus.BAD_REQUEST);
+                return "File is too big";
             }
 
             String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
@@ -48,12 +41,12 @@ public class FileController {
             File dir = new File(uploadDir);
 
             if (!dir.exists()) {
-                return new ResponseEntity<>("Uploads Directory not found", HttpStatus.INTERNAL_SERVER_ERROR);
+                return "Uploads Directory not found";
             }
             Files.copy(file.getInputStream(), Paths.get(uploadDir + fileName));
-            return new ResponseEntity<>("uploads/" + fileName, HttpStatus.OK);
+            return "uploads/" + fileName;
         }catch (IOException e) {
-            return new ResponseEntity<>("Could not upload the file!", HttpStatus.INTERNAL_SERVER_ERROR);
+            return "Could not upload the file!";
         }
     }
     

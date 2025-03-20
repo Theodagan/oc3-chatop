@@ -86,20 +86,6 @@ public class DbUserController {
         
     }
 
-    /* @SecurityRequirement(name = "Bearer Authentication")
-    public Integer getCurrentUserId(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            String currentUserName = authentication.getName();
-            DbUser currentUser = dbUserService.findByEmail(currentUserName);
-            if (currentUser != null) {
-                return currentUser.getId();
-            }
-        }
-        return null;
-    } */
-
-
     @PostMapping("/auth/register")
     public ResponseEntity<String> registerUser(@RequestBody DbUser user) {
         if(dbUserService.findByEmail(user.getEmail()) != null){
