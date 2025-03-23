@@ -30,9 +30,13 @@ public class MessageController {
         message.setUserId(messageData.getUser_id());
         message.setMessage(messageData.getMessage());
 
+        if (message.getUserId() == null || message.getRentalId() == null || message.getMessage() == null ){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         message.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
         messageService.saveMessage(message);
         
-        return new ResponseEntity<>("Rental created", HttpStatus.CREATED);
+        return new ResponseEntity<>("Message sent with success", HttpStatus.OK);
     }
 }

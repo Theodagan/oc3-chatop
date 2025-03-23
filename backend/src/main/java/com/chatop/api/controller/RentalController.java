@@ -35,7 +35,7 @@ public class RentalController {
     private DbUserService dbUserService;
     
     @GetMapping("")
-    @Operation(summary = "Get all rentals", description = "Returns all rentals as ")
+    @Operation(summary = "Get all rentals", description = "Returns all rentals as a list")
     public ResponseEntity<Map<String, List<Object>>> getAllRentals() {
 
         String baseImgUrl = "https://3001-idx-oc3-chatop-1737992916895.cluster-qtqwjj3wgzff6uxtk26wj7fzq6.cloudworkstations.dev/";
@@ -60,8 +60,10 @@ public class RentalController {
     @GetMapping("/{id}")
     @Operation(summary = "Get a rental by id", description = "Returns a rental as per the id")
     public ResponseEntity<Object> getRentalById(@PathVariable Integer id) {
+        String baseImgUrl = "https://3001-idx-oc3-chatop-1737992916895.cluster-qtqwjj3wgzff6uxtk26wj7fzq6.cloudworkstations.dev/";
         Rental rental = rentalService.getRentalById(id);
         if (rental != null) {
+            rental.setPicture(baseImgUrl + rental.getPicture());
             return new ResponseEntity<>(rentalService.parseRentalObject(rental), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
