@@ -6,6 +6,10 @@ import org.springframework.stereotype.Service;
 import com.chatop.api.model.DbUser;
 import com.chatop.api.repository.DbUserRepository;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+
 @Service
 public class DbUserService {
 
@@ -33,6 +37,18 @@ public class DbUserService {
 
     public DbUser findById(int id) {
         return userRepository.findById(id);
+    }
+
+    public Integer getCurrentUserId(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String currentUserName = authentication.getName();
+            DbUser currentUser = findByEmail(currentUserName);
+            if (currentUser != null) {
+                return currentUser.getId();
+            }
+        }
+        return null;
     }
 
 

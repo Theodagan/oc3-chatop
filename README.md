@@ -2,6 +2,8 @@
 
 Ce projet est une application web pour la gestion immobilière, développée avec Angular. Il permet aux utilisateurs de gérer et de visualiser des biens immobiliers.
 
+Il a été pensé "idx-first" mais peut être lancé sur n'importe quel environnement avec quelques modifications.
+
 ## Technologies utilisées
 
 Le projet utilise les technologies suivantes :
@@ -42,6 +44,10 @@ Le schéma de la base de données MySQL se trouve dans `scripts/db-init.sql`.
 
 Le script pour créer des données de test se trouve dans `scripts/db-mock-data.sql`.
 
+La base de donnée peut être initialisée directement en tant que service dans le fichier .nix si vous utilisez projet IDX, ou bien avec docker en utilisant le fichier docker/docker-compose.
+
+Si vous utilisez Docker n'oubliez pas de changer l'url de la base de donnée dans le fichier .nix
+
 ## Prérequis
 
 Avant de commencer, assurez-vous d'avoir les éléments suivants installés :
@@ -66,7 +72,9 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés :
 
 ## Lancement du projet
 
-Pour lancer l'application en mode développement, utiliser les commandes intégrées à idx ou bien le script de démarrage disponible dans `scripts/start_project.sh`
+Pour lancer l'application en mode développement, utiliser les commandes intégrées à idx en démarrant simplement le projet. 
+
+Pour lancer l'application sur un autre environnement  utiliser le script de démarrage disponible dans `scripts/start_project.sh`
     
 ## Scripts disponibles
 
@@ -81,7 +89,7 @@ Les scripts suivants sont disponibles dans le fichier `package.json` :
 
 ## Configuration de l'environnement avec IDX
 
-Ce projet peut être utilisé dans Project IDX, l'environnement de développement web de Google.
+Ce projet est pensé pour être utilisé dans Project IDX, l'environnement de développement web de Google.
 
 ### Personnalisation de l'environnement
 
@@ -141,3 +149,7 @@ Exemple de configuration dans `.idx/dev.nix` :
 ```
 
 Pour plus d'informations sur Project IDX, consultez le guide : [https://developers.google.com/idx/guides/introduction](https://developers.google.com/idx/guides/introduction)
+
+## Configuration de l'environnement sans IDX
+
+1. Déplacer les variables d'environnement de `dev.nix` à `.env`

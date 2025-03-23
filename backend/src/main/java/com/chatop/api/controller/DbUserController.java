@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api")
+@SecurityRequirement(name = "Bearer Authentication")
 public class DbUserController {
 
     @Autowired
@@ -46,8 +47,6 @@ public class DbUserController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
-    
 
     public Integer getConnectedUserId() {
         Object userIdObject = httpSession.getAttribute("userId");
@@ -86,20 +85,6 @@ public class DbUserController {
         
     }
 
-    @SecurityRequirement(name = "Bearer Authentication")
-    public Integer getCurrentUserId(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            String currentUserName = authentication.getName();
-            DbUser currentUser = dbUserService.findByEmail(currentUserName);
-            if (currentUser != null) {
-                return currentUser.getId();
-            }
-        }
-        return null;
-    }
-
-
     @PostMapping("/auth/register")
     public ResponseEntity<String> registerUser(@RequestBody DbUser user) {
         if(dbUserService.findByEmail(user.getEmail()) != null){
@@ -135,9 +120,9 @@ public class DbUserController {
 
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "Invalid credentials");
-            errorResponse.put("debugMessage", e.getMessage());
-            errorResponse.put("extra1", "Bad credentials for user: " + user.getEmail());
-            errorResponse.put("exceptionType", e.getClass().getName());
+            // errorResponse.put("debugMessage", e.getMessage());
+            // errorResponse.put("extra1", "Bad credentials for user: " + user.getEmail());
+            // errorResponse.put("exceptionType", e.getClass().getName());
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         } catch (Exception e){
@@ -145,13 +130,11 @@ public class DbUserController {
             
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "A login error occurred");
-            errorResponse.put("debugMessage", e.getMessage());
-            errorResponse.put("exceptionType", e.getClass().getName());
+            // errorResponse.put("debugMessage", e.getMessage());
+            // errorResponse.put("exceptionType", e.getClass().getName());
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-
-
 
 }

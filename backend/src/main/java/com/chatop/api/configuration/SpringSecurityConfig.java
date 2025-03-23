@@ -51,7 +51,8 @@ public class SpringSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable and configure CORS
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/auth/**")) // Disable CSRF only for /api/auth/**
+            //.csrf(csrf -> csrf.ignoringRequestMatchers("/api/auth/**")) // Disable CSRF only for /api/auth/** but need to handle a CRSF token 
+            .csrf(csrf -> csrf.disable()) 
             .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth ->
@@ -61,6 +62,7 @@ public class SpringSecurityConfig {
                     .requestMatchers("/swagger-ui/**").permitAll() 
                     .requestMatchers("/api-docs/**").permitAll()   
                     .requestMatchers("/webjars/**").permitAll() 
+                    .requestMatchers("/openapi.yaml").permitAll() 
                     .anyRequest().authenticated() // Requires authentication for any other request.
             );
 

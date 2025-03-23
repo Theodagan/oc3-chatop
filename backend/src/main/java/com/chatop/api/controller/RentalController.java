@@ -2,6 +2,8 @@ package com.chatop.api.controller;
 
 import com.chatop.api.model.Rental;
 import com.chatop.api.model.RentalForm;
+import com.chatop.api.services.DbUserService;
+import com.chatop.api.services.FileService;
 import com.chatop.api.services.RentalService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +29,15 @@ public class RentalController {
     private RentalService rentalService;
     
     @Autowired
-    private FileController fileController;
-    
-    @Autowired
-    private DbUserController dbUserController;
+    private FileService fileService;
+
+    @Autowired 
+    private DbUserService dbUserService;
     
     @GetMapping("")
-    @Operation(summary = "Get all rentals", description = "Returns all rentals as ")
+    @Operation(summary = "Get all rentals", description = "Returns all rentals as a list")
     public ResponseEntity<Map<String, List<Object>>> getAllRentals() {
 
-        //[port]-$WEB_HOST 
         String baseImgUrl = "https://3001-idx-oc3-chatop-1737992916895.cluster-qtqwjj3wgzff6uxtk26wj7fzq6.cloudworkstations.dev/";
 
         List<Rental> rentals = rentalService.getAllRentals(); 
@@ -46,7 +47,7 @@ public class RentalController {
         //add images to rental objects
         for(Rental rental : rentals){
             rental.setPicture(baseImgUrl + rental.getPicture());
-            tmpList.add(parseRentalObject(rental));
+            tmpList.add(rentalService.parseRentalObject(rental));
         }
         //parse rentals list for correct front-end format
         if(!tmpList.isEmpty()){
@@ -59,9 +60,11 @@ public class RentalController {
     @GetMapping("/{id}")
     @Operation(summary = "Get a rental by id", description = "Returns a rental as per the id")
     public ResponseEntity<Object> getRentalById(@PathVariable Integer id) {
+        String baseImgUrl = "https://3001-idx-oc3-chatop-1737992916895.cluster-qtqwjj3wgzff6uxtk26wj7fzq6.cloudworkstations.dev/";
         Rental rental = rentalService.getRentalById(id);
         if (rental != null) {
-            return new ResponseEntity<>(parseRentalObject(rental), HttpStatus.OK);
+            rental.setPicture(baseImgUrl + rental.getPicture());
+            return new ResponseEntity<>(rentalService.parseRentalObject(rental), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -75,11 +78,16 @@ public class RentalController {
         rental.setPrice(rentalForm.getPrice());
         rental.setDescription(rentalForm.getDescription());
 
-        rental.setOwnerId(dbUserController.getCurrentUserId());
+        rental.setOwnerId(dbUserService.getCurrentUserId());
 
         MultipartFile file = rentalForm.getPicture();
         if (file != null && !file.isEmpty()) {
-            String imgUrl = fileController.handleFileUpload(file).getBody();
+            String imgUrl = fileService.handleFileUpload(file);
+
+            if(!imgUrl.contains("/")){ // test if the relative path is valid or not
+                return new ResponseEntity<>(imgUrl, HttpStatus.BAD_REQUEST);
+            }
+
             rental.setPicture(imgUrl);
         } else {
             return new ResponseEntity<>("No file uploaded", HttpStatus.BAD_REQUEST);
@@ -114,23 +122,6 @@ public class RentalController {
         }
         rentalService.deleteRental(id);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    private Object parseRentalObject (Rental rental){
-        Map<String, Object> parsedObject = new HashMap<>();
-
-        // Renaming field to match rentalResponse.interface.ts
-        parsedObject.put("id", rental.getId()); 
-        parsedObject.put("name", rental.getName()); 
-        parsedObject.put("surface", rental.getSurface()); 
-        parsedObject.put("price", rental.getPrice()); 
-        parsedObject.put("picture", rental.getPicture()); 
-        parsedObject.put("description", rental.getDescription()); 
-        parsedObject.put("owner_id", rental.getOwnerId()); 
-        parsedObject.put("created_at", rental.getCreatedAt()); 
-        parsedObject.put("updated_at", rental.getUpdatedAt()); 
-
-        return parsedObject; 
     }
 
 }
