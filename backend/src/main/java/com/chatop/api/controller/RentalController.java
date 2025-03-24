@@ -71,7 +71,8 @@ public class RentalController {
     }
 
     @PostMapping("")
-    public ResponseEntity<String> createRental(@ModelAttribute RentalForm rentalForm) {
+    public ResponseEntity<Object> createRental(@ModelAttribute RentalForm rentalForm) {
+        Map<String, Object> response = new HashMap<>();
         Rental rental = new Rental();
         rental.setName(rentalForm.getName());
         rental.setSurface(rentalForm.getSurface());
@@ -94,11 +95,14 @@ public class RentalController {
         }
 
         rentalService.saveRental(rental);
-        return new ResponseEntity<>("Rental created", HttpStatus.CREATED);
+        response.put("message", "rental created");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateRental(@PathVariable Integer id, @ModelAttribute RentalForm rentalForm) {
+    public ResponseEntity<Object> updateRental(@PathVariable Integer id, @ModelAttribute RentalForm rentalForm) {
+        Map<String, Object> response = new HashMap<>();
+
         Rental rental = rentalService.getRentalById(id);
         if(rental == null){
             return new ResponseEntity<>("Rental not found", HttpStatus.NOT_FOUND);
@@ -110,8 +114,9 @@ public class RentalController {
         rental.setDescription(rentalForm.getDescription());
 
         rentalService.saveRental(rental);
+        response.put("message", "Rental updated");
 
-        return new ResponseEntity<>("Rental updated", HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
