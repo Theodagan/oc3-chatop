@@ -86,13 +86,19 @@ public class DbUserController {
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<String> registerUser(@RequestBody DbUser user) {
+    public ResponseEntity<Object> registerUser(@RequestBody DbUser user) {
         if(dbUserService.findByEmail(user.getEmail()) != null){
-            return new ResponseEntity<>("User already exists", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body("User already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         dbUserService.saveUser(user);
-        return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
+        
+        Map<String, Object> response = new HashMap<>();
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+        final String jwt = jwtUtils.generateToken(userDetails);
+        response.put("token", jwt);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/auth/login")
