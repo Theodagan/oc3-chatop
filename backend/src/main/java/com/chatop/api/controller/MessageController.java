@@ -1,6 +1,6 @@
 package com.chatop.api.controller;
 
-import com.chatop.api.dto.MessageDTO;
+import com.chatop.api.dto.ResponseDTO;
 import com.chatop.api.model.Message;
 import com.chatop.api.model.MessageForm;
 import com.chatop.api.services.MessageService;
@@ -24,7 +24,7 @@ public class MessageController {
     private MessageService messageService;
 
     @PostMapping("/api/messages")
-    public ResponseEntity<MessageDTO> createMessage(@RequestBody MessageForm messageData) {
+    public ResponseEntity<ResponseDTO> createMessage(@RequestBody MessageForm messageData) {
 
         Message message = new Message();
         message.setRentalId(messageData.getRental_id());
@@ -38,7 +38,7 @@ public class MessageController {
         message.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
         messageService.saveMessage(message);
 
-        MessageDTO response = new MessageDTO("Message sent with success");
+        ResponseDTO response = new ResponseDTO("Message sent with success");
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
