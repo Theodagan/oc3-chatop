@@ -1,15 +1,13 @@
 package com.chatop.api.controller;
 
+import com.chatop.api.dto.TokenDTO;
+import com.chatop.api.dto.UserDTO;
 import com.chatop.api.model.DbUser;
-import com.chatop.api.model.meDTO;
 import com.chatop.api.services.DbUserDetailsService;
 import com.chatop.api.services.DbUserService;
 import com.chatop.api.utils.JwtUtils;
 
 import jakarta.servlet.http.HttpSession;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,13 +53,26 @@ public class DbUserController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/user/{id}") 
-    public Object getUserById(@PathVariable Integer id) { 
-        return dbUserService.findById(id);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id, @RequestHeader("Authorization") String authorizationHeader) { 
+        // Check if the Authorization header is valid
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        
+        // Find the user by the id 
+        DbUser user = dbUserService.findById(id);        
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // should be a BAD_REQUEST but the 400 response is not part of the mockoon
+        }
+
+        UserDTO dto = new UserDTO(user.getId(), user.getEmail(), user.getName(), user.getCreatedAt(), user.getUpdatedAt());
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/auth/me")
-    public ResponseEntity<meDTO> me(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<UserDTO> me(@RequestHeader("Authorization") String authorizationHeader) {
         
         // Check if the Authorization header is valid
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -79,30 +90,30 @@ public class DbUserController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         
-        meDTO dto = new meDTO(user.getId(), user.getEmail(), user.getName(), user.getCreatedAt(), user.getUpdatedAt());
+        UserDTO dto = new UserDTO(user.getId(), user.getEmail(), user.getName(), user.getCreatedAt(), user.getUpdatedAt());
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
         
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<Object> registerUser(@RequestBody DbUser user) {
+    public ResponseEntity<TokenDTO> registerUser(@RequestBody DbUser user) {
         if(dbUserService.findByEmail(user.getEmail()) != null){
-            return ResponseEntity.badRequest().body("User already exists");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         dbUserService.saveUser(user);
         
-        Map<String, Object> response = new HashMap<>();
         final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         final String jwt = jwtUtils.generateToken(userDetails);
-        response.put("token", jwt);
+
+        TokenDTO response = new TokenDTO(jwt);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody DbUser user) {
+    public ResponseEntity<TokenDTO> login(@RequestBody DbUser user) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
@@ -116,31 +127,12 @@ public class DbUserController {
             final String jwt = jwtUtils.generateToken(userDetails);
 
             //response
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", jwt);
-            response.put("user", dbUserService.findByEmail(user.getEmail()).getId());
+            TokenDTO response = new TokenDTO(jwt);
 
             return ResponseEntity.ok(response);
             
         } catch (BadCredentialsException e) {
-
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Invalid credentials");
-            // errorResponse.put("debugMessage", e.getMessage());
-            // errorResponse.put("extra1", "Bad credentials for user: " + user.getEmail());
-            // errorResponse.put("exceptionType", e.getClass().getName());
-
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
-        } catch (Exception e){
-            System.out.println("An error occurred during login for user: " + user.getEmail());
-            
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "A login error occurred");
-            // errorResponse.put("debugMessage", e.getMessage());
-            // errorResponse.put("exceptionType", e.getClass().getName());
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
-
 }

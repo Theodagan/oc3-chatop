@@ -1,4 +1,4 @@
-package com.chatop.api.model;
+package com.chatop.api.dto;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class meDTO {
+public class UserDTO {
     @Schema(example = "1", required = true)
     private int id;
 
@@ -25,7 +25,7 @@ public class meDTO {
     @Schema(required = true)
 	private Date updated_at;
 
-    public meDTO(int id, String email, String name, Date created_at, Date updated_at) {
+    public UserDTO(int id, String email, String name, Date created_at, Date updated_at) {
         this.id = id;
         this.name = name;
         this.email = email;
