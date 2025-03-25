@@ -1,5 +1,6 @@
 package com.chatop.api.controller;
 
+import com.chatop.api.dto.ResponseDTO;
 import com.chatop.api.model.Message;
 import com.chatop.api.model.MessageForm;
 import com.chatop.api.services.MessageService;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
@@ -25,9 +24,7 @@ public class MessageController {
     private MessageService messageService;
 
     @PostMapping("/api/messages")
-    public ResponseEntity<Object> createMessage(@RequestBody MessageForm messageData) {
-
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<ResponseDTO> createMessage(@RequestBody MessageForm messageData) {
 
         Message message = new Message();
         message.setRentalId(messageData.getRental_id());
@@ -41,7 +38,7 @@ public class MessageController {
         message.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
         messageService.saveMessage(message);
 
-        response.put("message", "Message sent with success");
+        ResponseDTO response = new ResponseDTO("Message sent with success");
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
